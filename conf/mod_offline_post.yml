@@ -1,0 +1,7 @@
+# edit this file to fit your needs
+
+modules:
+  mod_offline_post:
+    post_url: ""
+    app_id: ""
+    api_key: ""
