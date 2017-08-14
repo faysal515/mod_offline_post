@@ -1,3 +1,5 @@
 author: "Jan de la Pena <jan.mudzki@gmail.com>"
 category: "offline"
 summary: "Forwards messages that are sent to offline users through a post request to a configurable url"
+home: "https://github.com/jjdp/mod_offline_post/tree/master/"
+url: "git@github.com:jjdp/mod_offline_post.git"
