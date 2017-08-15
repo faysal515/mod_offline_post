@@ -44,6 +44,8 @@ send_notice({Action,Packet}) ->
 	
 	%% Custom data/subelement of your own from the message
 	CustomData = fxml:get_path_s(El, [{elem, list_to_binary("data")}]),
+	FromId = binary_to_list(fxml:get_tag_attr_s(list_to_binary("fromId"), CustomData)),
+	ToId = binary_to_list(fxml:get_tag_attr_s(list_to_binary("toId"), CustomData)),
 	IsPhoto = binary_to_list(fxml:get_tag_attr_s(list_to_binary("isPhoto"), CustomData)),
 	
 	PostUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, post_url,fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
@@ -52,7 +54,7 @@ send_notice({Action,Packet}) ->
 	AppId = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_id, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	ApiKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, api_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	
-	Data = string:join(["to=", ToUsername, "&from=", FromUsername, "&body=", Body, "&isPhoto=", IsPhoto], ""),
+	Data = string:join(["to=", ToUsername, "&toId=", ToId, "&from=", FromUsername, "&fromId=", FromId, "&body=", Body, "&isPhoto=", IsPhoto], ""),
 	Request = {binary_to_list(PostUrl), [{"X-Parse-Application-Id", binary_to_list(AppId)}, {"X-Parse-REST-API-Key", binary_to_list(ApiKey)}], "application/x-www-form-urlencoded", Data},
 	httpc:request(post, Request,[],[]),
 
