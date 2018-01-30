@@ -4,4 +4,4 @@ modules:
   mod_offline_post:
     post_url: ""
     app_id: ""
-    api_key: ""
+    master_key: ""
