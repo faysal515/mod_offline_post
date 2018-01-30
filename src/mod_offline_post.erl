@@ -42,20 +42,15 @@ send_notice({Action,Packet}) ->
 	%% Convert back to xmlel
 	El = xmpp:encode(Packet),
 	
-	%% Custom data/subelement of your own from the message
-	CustomData = fxml:get_path_s(El, [{elem, list_to_binary("data")}]),
-	FromId = binary_to_list(fxml:get_tag_attr_s(list_to_binary("fromId"), CustomData)),
-	ToId = binary_to_list(fxml:get_tag_attr_s(list_to_binary("toId"), CustomData)),
-	IsPhoto = binary_to_list(fxml:get_tag_attr_s(list_to_binary("isPhoto"), CustomData)),
 	
 	PostUrl = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, post_url,fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	
 	%% Configure your own options passed to module
 	AppId = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_id, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
-	ApiKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, api_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
+	MasterKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	
-	Data = string:join(["to=", ToUsername, "&toId=", ToId, "&from=", FromUsername, "&fromId=", FromId, "&body=", Body, "&isPhoto=", IsPhoto], ""),
-	Request = {binary_to_list(PostUrl), [{"X-Parse-Application-Id", binary_to_list(AppId)}, {"X-Parse-REST-API-Key", binary_to_list(ApiKey)}], "application/x-www-form-urlencoded", Data},
+	Data = string:join(["to=", ToUsername, "&from=", FromUsername, "&body=", Body], ""),
+	Request = {binary_to_list(PostUrl), [{"X-Parse-Application-Id", binary_to_list(AppId)}, {"X-Parse-Master-key", binary_to_list(MasterKey)}], "application/x-www-form-urlencoded", Data},
 	httpc:request(post, Request,[],[]),
 
 	ok.
