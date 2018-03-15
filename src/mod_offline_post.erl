@@ -49,8 +49,8 @@ send_notice({Action,Packet}) ->
 	AppId = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, app_id, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	MasterKey = gen_mod:get_module_opt(To#jid.lserver, ?MODULE, master_key, fun(S) -> iolist_to_binary(S) end, list_to_binary("")),
 	
-	Data = string:join(["to=", ToUsername, "&from=", FromUsername, "&body=", Body], ""),
-	Request = {binary_to_list(PostUrl), [{"X-Parse-Application-Id", binary_to_list(AppId)}, {"X-Parse-Master-key", binary_to_list(MasterKey)}], "application/x-www-form-urlencoded", Data},
+	FinalData = string:join(["{", "\"to\":", "\"", ToUsername, "\",", "\"from\":", "\"", FromUsername, "\",", "\"body\":", "\"", Body, "\"",  "}"], ""),
+        Request = {binary_to_list(PostUrl), [{"X-Parse-Application-Id", binary_to_list(AppId)}, {"X-Parse-Master-key", binary_to_list(MasterKey)}], "application/json", FinalData},
 	httpc:request(post, Request,[],[]),
 
 	ok.
